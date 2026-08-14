@@ -1,0 +1,27 @@
+{
+  "lead_id": "LD-20260810-ER-001",
+  "source": "员工推荐",
+  "source_code": "employee_referral",
+  "referrer": {
+    "name": "李明",
+    "dept": "仓配运营",
+    "note": "朋友开网店，最近在比价快递，可能有固定发货需求"
+  },
+  "contact": {
+    "name": "王女士",
+    "title": "店铺负责人",
+    "company": "杭州市余杭区·轻语服饰（淘宝店）",
+    "phone_display": "138****6621",
+    "city": "杭州"
+  },
+  "precheck": {
+    "obviously_invalid": false,
+    "reason": "有推荐人背书与具体业务场景，进入外呼校验"
+  },
+  "call_goal": [
+    "确认是否有快递或发货需求",
+    "若否认需求则礼貌结束并标无效",
+    "若确认有需求则追问寄从哪到哪、大概月单量",
+    "通话结束后基于录音稿抽取拜访小记（不对用户口播内部标签）"
+  ]
+}

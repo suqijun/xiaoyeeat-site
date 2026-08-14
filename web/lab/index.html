@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>怎么试 · 线索清洗外呼</title>
+  <link rel="stylesheet" href="/assets/site-shared.css" />
+  <link rel="stylesheet" href="/assets/styles-notion.css" />
+  <style>
+    .lab-page { max-width: 640px; margin: 0 auto; padding: 48px var(--pad-x) 72px; }
+    .lab-page h1 {
+      margin: 12px 0 16px;
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: 0.01em;
+      line-height: 1.3;
+    }
+    .lab-page .lede {
+      margin: 0 0 28px;
+      font-family: var(--font-display);
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+    .lab-page .steps {
+      margin: 0 0 28px;
+      padding: 0;
+      list-style: none;
+    }
+    .lab-page .steps li {
+      display: grid;
+      grid-template-columns: 1.75rem 1fr;
+      gap: 10px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 15.5px;
+      line-height: 1.65;
+      color: var(--body);
+    }
+    .lab-page .steps b {
+      width: 1.75rem; height: 1.75rem; border-radius: 50%;
+      display: grid; place-items: center;
+      background: var(--blue); color: #fff;
+      font-family: var(--font-strong); font-size: 12px;
+    }
+    .lab-page .cta-row { display: flex; flex-wrap: wrap; gap: 12px; }
+    .lab-page .eyebrow {
+      display: inline-flex;
+      padding: 4px 9px;
+      border-radius: 6px;
+      background: var(--sky);
+      color: var(--sky-deep);
+      font-family: var(--font-strong);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="site-bar">
+    <a class="back" href="/">← 返回作品站</a>
+    <a class="brand" href="/"><span class="brand-mark">苏</span>苏琦珺 · Works</a>
+  </div>
+  <main class="lab-page">
+    <p class="eyebrow">可试</p>
+    <h1>线索清洗外呼测试台</h1>
+    <p class="lede">你扮演客户接听。AI「小陈」确认寄件需求，挂机后生成可抽检的拜访小记。浏览器模拟电话，不是真实线路。</p>
+    <ol class="steps">
+      <li><b>1</b><span>允许麦克风。浏览器模拟电话，不会打到真实号码。</span></li>
+      <li><b>2</b><span>按人设接听。你扮演客户，AI「小陈」确认寄件需求。</span></li>
+      <li><b>3</b><span>挂机后查看拜访小记。字段可抽检、可改标。</span></li>
+    </ol>
+    <div class="cta-row">
+      <a class="btn btn-primary btn-lg" href="/lab/call">进入测试台</a>
+      <a class="btn btn-secondary btn-lg" href="/articles/lead-cleaning">先读文章</a>
+    </div>
+  </main>
+</body>
+</html>

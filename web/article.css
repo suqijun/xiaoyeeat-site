@@ -1,0 +1,222 @@
+/* 文章页：叠在 site-shared 之上，对齐首页 Notion 风 */
+body.article-body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--body);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.75;
+  letter-spacing: 0.02em;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px var(--pad-x, 20px) 80px;
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.toc {
+  position: sticky;
+  top: 72px;
+  max-height: calc(100vh - 88px);
+  overflow: auto;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card, 14px);
+  padding: 16px 14px 18px;
+  font-size: 13px;
+  line-height: 1.45;
+  box-shadow: 0 2px 8px rgba(25, 26, 35, 0.03);
+}
+.toc-title {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted-2);
+  letter-spacing: 0.1em;
+}
+.toc ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+}
+.toc > ul > li { margin: 8px 0; }
+.toc ul ul {
+  margin: 4px 0 6px;
+  padding-left: 0.85em;
+  border-left: 2px solid var(--line);
+}
+.toc ul ul li { margin: 4px 0; }
+.toc a {
+  color: var(--body);
+  text-decoration: none;
+}
+.toc a:hover { color: var(--blue); }
+
+.page {
+  max-width: none;
+  margin: 0;
+  padding: 36px 32px 64px;
+  background: var(--bg-elevated);
+  min-height: 60vh;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-window, 16px);
+  box-shadow: var(--shadow-window);
+  overflow-x: auto;
+}
+
+.page h1,
+.page h2,
+.page h3,
+.page h4,
+.page h5,
+.page h6 { scroll-margin-top: 72px; }
+
+.page h1 {
+  margin: 0 0 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3.2vw, 32px);
+  line-height: 1.35;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.page h2 {
+  margin: 56px 0 18px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.4;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.page > h2:first-of-type { margin-top: 12px; }
+.page h3 {
+  margin: 26px 0 10px;
+  font-size: 16.5px;
+  color: var(--ink);
+  font-weight: 650;
+}
+.page h4 {
+  margin: 18px 0 8px;
+  font-size: 15px;
+  color: var(--ink);
+  font-weight: 600;
+}
+.page h5 {
+  margin: 16px 0 8px;
+  font-size: 14.5px;
+  color: var(--ink);
+  font-weight: 600;
+}
+.page h5[id^="step-"] {
+  margin: 28px 0 12px;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--blue-soft-text);
+  background: var(--blue-soft);
+  border-left: 3px solid var(--blue);
+  border-radius: 0 8px 8px 0;
+}
+.page h6 {
+  margin: 14px 0 6px;
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 600;
+}
+.page p { margin: 0 0 12px; }
+.page ul, .page ol { margin: 0 0 14px; padding-left: 1.4em; }
+.page li { margin: 4px 0; }
+
+.callout {
+  background: var(--sky);
+  border: 1px solid rgba(11, 100, 184, 0.12);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 16px 0 20px;
+}
+.callout > :first-child { margin-top: 0; }
+.callout > :last-child { margin-bottom: 0; }
+.callout p { margin: 0; }
+.callout p + p { margin-top: 8px; }
+.callout strong { color: var(--ink); }
+
+.page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0 22px;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.page th, .page td {
+  border: 1px solid var(--line);
+  padding: 10px 12px;
+  vertical-align: top;
+  text-align: left;
+}
+.page th {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 650;
+  white-space: nowrap;
+}
+.page th[colspan] { text-align: center; }
+
+/* 物流文：属性标签底色（销售通用 / 组织特有 / 物流履约） */
+.page td.stage {
+  background: #f8fafc;
+  font-weight: 650;
+  color: var(--blue-soft-text);
+  white-space: nowrap;
+  width: 5.5em;
+}
+.page .tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 3px;
+  background: #eef2ff;
+  color: #312e81;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.page .tag.org { background: #ecfeff; color: #155e75; }
+.page .tag.log { background: #fff7ed; color: #9a3412; }
+
+.page .principles {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 18px 14px 16px;
+  margin: 14px 0 20px;
+}
+.page .principles ol { margin-bottom: 0; }
+
+@media (max-width: 960px) {
+  .shell {
+    grid-template-columns: 1fr;
+    padding: 16px 16px 64px;
+  }
+  .toc {
+    position: static;
+    max-height: none;
+    margin-bottom: 4px;
+  }
+  .page { padding: 28px 20px 56px; }
+}
+@media print {
+  body { background: #fff; }
+  .site-bar { display: none; }
+  .shell { display: block; max-width: none; padding: 0; }
+  .toc { position: static; max-height: none; margin-bottom: 20px; break-inside: avoid; }
+  .page { box-shadow: none; border: none; max-width: none; padding: 0; }
+}

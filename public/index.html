@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <title>线索清洗外呼测试台 · 苏琦珺 Works</title>
+  <link rel="stylesheet" href="/static/styles.css?v=20260814q" />
+</head>
+<body>
+  <div class="atmosphere" aria-hidden="true"></div>
+
+  <noscript>
+    <p style="padding:24px;font-family:sans-serif;">请启用 JavaScript 后使用本测试台。</p>
+  </noscript>
+
+  <header class="topbar">
+    <div class="topbar-brand">
+      <a class="brand-home" href="/"><span class="brand-mark">苏</span><span>苏琦珺 · Works</span></a>
+      <span class="badge">可试</span>
+      <div class="topbar-titles">
+        <p class="product">线索清洗外呼测试台</p>
+        <p class="product-sub">浏览器模拟电话 · 非真实线路</p>
+      </div>
+    </div>
+    <nav class="topbar-nav" aria-label="站点">
+      <a href="/lab">怎么试</a>
+      <a href="/articles/lead-cleaning">先读文章</a>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <p class="page-lede">你扮演客户接听；AI「小陈」外呼确认寄件需求。挂机后自动生成拜访小记。</p>
+
+    <div class="workspace">
+      <section class="call-stage" aria-label="通话区">
+        <div class="stage-status">
+          <span class="status-dot" id="statusDot" data-state="idle" aria-hidden="true"></span>
+          <div>
+            <h1 class="call-state" id="headline">待接听</h1>
+            <p class="call-sub" id="subline">点下方按钮开始；小陈会先开口</p>
+          </div>
+        </div>
+
+        <div class="stage-visual" id="orb" data-state="idle" aria-hidden="true">
+          <span class="stage-blob"></span>
+          <svg class="stage-doodle" viewBox="0 0 48 48" fill="none">
+            <rect x="15" y="6" width="18" height="36" rx="4" fill="#D6EAFD" />
+            <rect x="16" y="6" width="16" height="36" rx="3" stroke="currentColor" stroke-width="2" />
+            <circle cx="24" cy="36" r="1.6" fill="currentColor" />
+            <path d="M10 14c3-2 5 2 3 4M38 18c-3-1-4 3-2 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            <path d="M34 8c4-3 8 1 6 5" stroke="#C45C3E" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </div>
+
+        <button type="button" class="call-btn" id="callBtn" aria-label="接听测试来电">
+          <span class="call-icon" aria-hidden="true"></span>
+          <span class="call-btn-text" id="callLabel">接听</span>
+        </button>
+        <p class="hint" id="hint">需要麦克风权限。再点一次可挂断。</p>
+      </section>
+
+      <aside class="context-rail" aria-label="本通上下文">
+        <article class="rail-block rail-you" id="leadCard">
+          <p class="rail-tag">你扮演</p>
+          <h2 class="rail-title">测试用户</h2>
+          <p class="rail-body" id="roleYouBody">接通后按人设用麦克风应答。</p>
+          <div class="persona">
+            <p class="persona-label">本通人设</p>
+            <p class="lead-source" id="leadSource">员工推荐</p>
+            <p class="lead-name" id="leadName">加载中…</p>
+            <p class="lead-meta" id="leadMeta"></p>
+          </div>
+        </article>
+
+        <article class="rail-block rail-ai">
+          <p class="rail-tag">对端</p>
+          <h2 class="rail-title">小陈 · 语音 AI</h2>
+          <p class="rail-body">链驿市场部清洗外呼：确认寄件需求，问清发货地、到达地、月单量与联系方式。通话中不做口头总结。</p>
+        </article>
+
+        <ol class="rail-steps">
+          <li><span>1</span>接听并允许麦克风</li>
+          <li><span>2</span>按人设自然回答</li>
+          <li><span>3</span>挂机查看拜访小记</li>
+        </ol>
+      </aside>
+    </div>
+  </main>
+
+  <aside class="note-panel" id="notePanel" hidden>
+    <div class="note-sheet">
+      <div class="note-banner">
+        <div class="note-banner-text">
+          <p class="note-eyebrow">通话小结</p>
+          <h2 class="note-title" id="noteLeadTitle">拜访小记</h2>
+          <p class="note-submeta" id="noteLeadMeta">挂机后自动生成</p>
+        </div>
+        <button type="button" class="note-close" id="noteDismiss" aria-label="关闭">关闭</button>
+      </div>
+
+      <header class="note-chrome">
+        <div class="note-tabs" role="tablist" aria-label="小记内容切换">
+          <button type="button" class="note-tab is-active" role="tab" aria-selected="true" data-tab="form" id="tabForm">拜访小记</button>
+          <button type="button" class="note-tab" role="tab" aria-selected="false" data-tab="transcript" id="tabTranscript">录音稿</button>
+        </div>
+        <div class="note-chrome-right">
+          <button type="button" class="btn-edit" id="noteEditBtn">编辑</button>
+          <div class="note-edit-pair" id="noteEditActions">
+            <button type="submit" form="noteForm" class="btn-save" id="noteSaveBtn">保存</button>
+            <button type="button" class="btn-ghost sm" id="noteCancelEdit">取消</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="note-body">
+        <div class="note-tab-panel" id="panelForm" role="tabpanel">
+          <form id="noteForm" class="note-form is-view">
+            <fieldset id="noteFields" disabled>
+              <label>线索是否有效
+                <select name="result" id="noteResult">
+                  <option value="无效">无效</option>
+                  <option value="有效">有效</option>
+                </select>
+              </label>
+              <label>意愿
+                <select name="intent" id="noteIntent"></select>
+              </label>
+              <label>是否有寄件诉求
+                <select name="has_shipping_need" id="noteNeed">
+                  <option value="">—</option>
+                  <option value="是">是</option>
+                  <option value="否">否</option>
+                </select>
+              </label>
+              <label id="invalidReasonField">无效原因
+                <select name="invalid_reason" id="noteInvalidReason"></select>
+              </label>
+              <label>拜访方式
+                <select name="visit_method" id="noteMethod"></select>
+              </label>
+              <label>发货地
+                <select name="origin" id="noteOrigin"></select>
+              </label>
+              <div class="field field-dest">
+                <span class="field-caption">到达地</span>
+                <p class="dest-text" id="noteDestText">—</p>
+                <div class="check-grid" id="noteDestinations"></div>
+              </div>
+              <label>月单量
+                <input name="monthly_volume" id="noteVolume" autocomplete="off" />
+              </label>
+              <label>其他联系方式
+                <input name="contact_alt" id="noteContactAlt" autocomplete="off" />
+              </label>
+              <label>后续动作
+                <select name="next_action" id="noteNext"></select>
+              </label>
+              <label class="field-span">沟通摘要
+                <textarea name="summary" id="noteSummary" rows="3"></textarea>
+              </label>
+            </fieldset>
+          </form>
+        </div>
+
+        <div class="note-tab-panel" id="panelTranscript" role="tabpanel" hidden>
+          <div class="transcript-log" id="transcriptLog"></div>
+        </div>
+
+        <p class="note-status" id="noteStatus"></p>
+      </div>
+    </div>
+  </aside>
+
+  <script src="/static/app.js?v=20260814p"></script>
+</body>
+</html>

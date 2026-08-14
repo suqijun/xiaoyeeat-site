@@ -1,0 +1,16 @@
+[Unit]
+Description=xiaoyeeat.cn Works (FastAPI)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/xiaoyeeat-site
+Environment=PATH=/opt/xiaoyeeat-site/.venv/bin
+EnvironmentFile=-/opt/xiaoyeeat-site/.env
+ExecStart=/opt/xiaoyeeat-site/.venv/bin/uvicorn server:app --host 127.0.0.1 --port 8000
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

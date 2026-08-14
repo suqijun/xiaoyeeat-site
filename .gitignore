@@ -1,0 +1,10 @@
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+leads/visit_notes/*
+!leads/visit_notes/.gitkeep
+server_lab.py
+*.log
