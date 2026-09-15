@@ -173,7 +173,7 @@ def _build_llm_messages(
     origins = enums.get("origins") or []
     destinations = enums.get("destinations") or []
     intents = enums.get("intents") or []
-    results = enums.get("results") or ["有效", "无效"]
+    results = enums.get("results") or ["有效", "无效", "待定"]
     shipping = enums.get("shipping_need") or ["是", "否"]
     invalid_reasons = enums.get("invalid_reasons") or []
     next_actions = enums.get("next_actions") or []
@@ -192,7 +192,7 @@ def _build_llm_messages(
 
 字段与枚举（必须遵守）：
 - ai_result: 仅 {results}
-- ai_invalid_reason: 有效时为空字符串；无效时取 {invalid_reasons}
+- ai_invalid_reason: 有效或待定时为空字符串；无效时取 {invalid_reasons}
 - ai_intent: 仅 {intents}
 - has_shipping_need: 「是」「否」或空字符串（本通未确认则空）
 - origin: 空或 {origins}
@@ -206,9 +206,10 @@ def _build_llm_messages(
 1) 明确拒绝继续通话 → 无效 / 明确拒绝 / 意愿无 / 寄件诉求否 / 无需跟进
 2) 明确无寄件需求，且不是另约 → 无效 / 无寄件需求 / 意愿无 / 寄件诉求否 / 无需跟进
 3) 现在不方便并约定再联系（如明天上午9点）→ 有效；next_action=另约时间联系；寄件诉求未确认则空；摘要写清约定时间。不要判成无效拒绝。
-4) 确认有寄件且可大致承接 → 有效；无法承接 → 无效 / 需求无法满足
-5) 信息不足但未否认需求 → 有效，意愿可偏低，寄件诉求可空；摘要写「未完整确认」并引用用户要点
-6) 不得编造录音中没有的地点、单量、微信号
+4) 接通后表示暂时没空、很匆忙挂断，或未充分确认诉求就结束，且未约定具体再联系时间 → 待定；next_action=重新拨打电话；无效原因为空；寄件诉求空；意愿可偏低。不要判成无效。
+5) 确认有寄件且可大致承接 → 有效；无法承接 → 无效 / 需求无法满足
+6) 信息不足但未否认需求，且已进行基本沟通（非匆忙挂断）→ 有效，意愿可偏低，寄件诉求可空；摘要写「未完整确认」并引用用户要点
+7) 不得编造录音中没有的地点、单量、微信号
 
 线索侧参考（非用户口述，仅作城市映射提示）：{json.dumps(lead_bits, ensure_ascii=False)}
 """
@@ -246,7 +247,7 @@ def _parse_llm_json(content: str) -> dict[str, Any]:
 def _note_from_llm_payload(
     data: dict[str, Any], enums: dict[str, Any]
 ) -> dict[str, Any]:
-    results = enums.get("results") or ["有效", "无效"]
+    results = enums.get("results") or ["有效", "无效", "待定"]
     intents = enums.get("intents") or ["高", "中", "低", "无"]
     invalid_reasons = enums.get("invalid_reasons") or []
     origins = enums.get("origins") or []
@@ -263,7 +264,7 @@ def _note_from_llm_payload(
     if has_shipping_need not in shipping_opts:
         has_shipping_need = ""
 
-    if ai_result == "有效":
+    if ai_result in ("有效", "待定"):
         ai_invalid_reason = ""
     else:
         ai_invalid_reason = _pick_enum(
@@ -455,6 +456,7 @@ def _is_reschedule(user: str, bot: str) -> bool:
     return bool(
         re.search(
             r"换个时间|不太方便|现在忙|现在不方便|不方便接|另约|改天|"
+            r"没空|没时间|正忙|先挂|回头再说|晚点再说|"
             r"回头再|晚点打|稍后再打|明天.{0,8}(打|联系|电话)|"
             r"上午\s*\d{1,2}\s*点|下午\s*\d{1,2}\s*点",
             text,
@@ -468,6 +470,7 @@ def _build_summary(
     reject: bool,
     deny: bool,
     reschedule: bool,
+    pending: bool,
     callback_time: str,
     has_shipping_need: str,
     origin: str,
@@ -482,6 +485,8 @@ def _build_summary(
         parts.append("用户明确拒绝继续通话")
     elif deny:
         parts.append("用户表示没有寄件/发货需求")
+    elif pending:
+        parts.append("用户表示暂时没空或匆忙结束通话，线索有效性待定，需重新拨打确认")
     elif reschedule or callback_time:
         if callback_time and callback_time not in ("另约时间", "明天", "后天"):
             parts.append(f"用户现在不方便，约定{callback_time}再联系")
@@ -569,11 +574,20 @@ def _extract_via_rules(
         ai_intent = "无"
         ai_followable = False
     elif reschedule or callback_time:
-        ai_result = "有效"
-        ai_invalid_reason = ""
-        has_shipping_need = "是" if has_need else ""
-        ai_intent = "中"
-        ai_followable = True
+        # 约定了可执行的再联系时间 → 有效另约；仅说没空/匆忙挂断 → 待定重拨
+        concrete_appt = bool(callback_time) and callback_time not in ("另约时间", "")
+        if concrete_appt:
+            ai_result = "有效"
+            ai_invalid_reason = ""
+            has_shipping_need = "是" if has_need else ""
+            ai_intent = "中"
+            ai_followable = True
+        else:
+            ai_result = "待定"
+            ai_invalid_reason = ""
+            has_shipping_need = "是" if has_need else ""
+            ai_intent = "低"
+            ai_followable = False
     elif cannot_serve and has_need:
         ai_result = "无效"
         ai_invalid_reason = "需求无法满足"
@@ -592,11 +606,21 @@ def _extract_via_rules(
             ai_intent = "中"
         ai_followable = True
     else:
-        ai_result = "有效"
-        ai_invalid_reason = ""
-        has_shipping_need = ""
-        ai_intent = "低"
-        ai_followable = True
+        user_lines = [r["text"] for r in merged if r["role"] == "user"]
+        abrupt = len(user_lines) <= 2 and len(user.strip()) < 24
+        if abrupt:
+            # 匆忙挂断、几乎未确认诉求 → 待定
+            ai_result = "待定"
+            ai_invalid_reason = ""
+            has_shipping_need = ""
+            ai_intent = "低"
+            ai_followable = False
+        else:
+            ai_result = "有效"
+            ai_invalid_reason = ""
+            has_shipping_need = ""
+            ai_intent = "低"
+            ai_followable = True
 
     origin = _map_origin(user, lead, enums)
     destinations = _map_destinations(user, enums)
@@ -625,7 +649,9 @@ def _extract_via_rules(
             contact_alt = "微信"
 
     next_actions = enums.get("next_actions") or []
-    if not ai_followable:
+    if ai_result == "待定":
+        next_action = "重新拨打电话"
+    elif not ai_followable:
         next_action = "无需跟进"
     elif reschedule or callback_time or re.search(
         r"另约|不方便|回头再|改天|现在忙|换个时间|明天|上午|下午", text_all
@@ -643,7 +669,8 @@ def _extract_via_rules(
         merged=merged,
         reject=reject,
         deny=deny and not reschedule,
-        reschedule=reschedule or bool(callback_time),
+        reschedule=(ai_result == "有效") and (reschedule or bool(callback_time)),
+        pending=ai_result == "待定",
         callback_time=callback_time,
         has_shipping_need=has_shipping_need,
         origin=origin,

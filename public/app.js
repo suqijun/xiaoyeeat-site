@@ -140,10 +140,11 @@
   }
 
   function syncInvalidReasonVisibility() {
-    const valid = document.getElementById("noteResult").value === "有效";
+    const result = document.getElementById("noteResult").value;
+    const needsNoReason = result === "有效" || result === "待定";
     if (!invalidReasonField) return;
-    invalidReasonField.hidden = valid && isViewMode();
-    if (valid && !isViewMode()) {
+    invalidReasonField.hidden = needsNoReason && isViewMode();
+    if (needsNoReason && !isViewMode()) {
       document.getElementById("noteInvalidReason").value = "";
     }
   }
@@ -177,6 +178,7 @@
       enums = body.enums || {};
       fillSelect(document.getElementById("noteOrigin"), enums.origins || [], true);
       fillDestCheckboxes(enums.destinations || []);
+      fillSelect(document.getElementById("noteResult"), enums.results || ["无效", "有效", "待定"]);
       fillSelect(document.getElementById("noteIntent"), enums.intents || ["高", "中", "低", "无"]);
       fillSelect(document.getElementById("noteInvalidReason"), enums.invalid_reasons || [], true);
       fillSelect(document.getElementById("noteMethod"), enums.visit_methods || ["电话拜访"]);
@@ -651,7 +653,7 @@
       visit_method: data.visit_method || "电话拜访",
       judgment_source: "call_transcript_extract",
       ai_result: result,
-      ai_invalid_reason: result === "有效" ? "" : realText(data.invalid_reason),
+      ai_invalid_reason: result === "无效" ? realText(data.invalid_reason) : "",
       ai_intent: data.intent,
       ai_followable: result === "有效",
       slots: {
